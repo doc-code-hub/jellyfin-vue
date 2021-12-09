@@ -129,3 +129,22 @@ jobs:
             ghcr.io/jellyfin/jellyfin-vue:unstable
             ghcr.io/jellyfin/jellyfin-vue:unstable-static
             ghcr.io/jellyfin/jellyfin-vue:unstable-static.${{ steps.date.outputs.date }}.${{ steps.sha.outputs.sha }}
+
+      - name: Clone gh-pages branch
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          token: ${{ secrets.JF_BOT_TOKEN }}
+          path: gh-pages
+
+        # true always makes the commit succeed, even if no files were changed
+      - name: Deploy to GitHub Pages
+        run: |
+          git config --global user.name jellyfin-bot
+          git config --global user.email team@jellyfin.org
+          cd gh-pages
+          rm -rf *
+          mv ../src/dist/* .
+          git add .
+          git commit --amend -m "ci(gh-pages): deploy commit ${{ steps.sha.outputs.sha }} in master branch" || true
+          git push -f
