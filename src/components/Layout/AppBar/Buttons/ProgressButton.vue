@@ -26,16 +26,23 @@
     </template>
     <v-card>
       <v-list color="transparent">
-        <v-list-item
-          v-for="(task, index) in tasks"
-          :key="`${task.type}-${index}`"
-        >
+        <v-list-item v-for="(task, index) in taskList" :key="`${index}`">
           <v-list-item-content>
-            {{ $t('appbar.tasks.configSync') }}
+            {{ task.text }}
           </v-list-item-content>
           <v-list-item-action>
-            <v-progress-circular indeterminate size="24" />
+            <v-progress-circular
+              v-if="task.progress === undefined"
+              indeterminate
+              size="24"
+            />
+            <v-progress-linear
+              v-else-if="task.progress !== undefined && task.progress >= 0"
+              :value="task.progress"
+              :indeterminate="task.progress === 0"
+            />
           </v-list-item-action>
+          <v-divider />
         </v-list-item>
       </v-list>
     </v-card>
@@ -48,7 +55,7 @@ import { mapState } from 'vuex';
 import { RunningTask, TaskType } from '~/store/taskManager';
 
 interface TaskInfo {
-  progress: null | number;
+  progress: undefined | number;
   text: string;
 }
 
@@ -86,13 +93,13 @@ export default Vue.extend({
   },
   methods: {
     getTaskList(): void {
-      const list = [];
+      const list: Array<TaskInfo> = [];
 
       for (const task of this.tasks as RunningTask[]) {
         switch (task.type) {
           case TaskType.ConfigSync:
             list.push({
-              progress: null,
+              progress: undefined,
               text: this.$t('appbar.tasks.configSync')
             });
             break;
@@ -106,6 +113,8 @@ export default Vue.extend({
             break;
         }
       }
+
+      this.taskList = list;
     }
   }
 });
