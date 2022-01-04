@@ -1,4 +1,4 @@
-import { MutationTree, ActionTree } from 'vuex';
+import { ActionTree } from 'vuex';
 import { UserDto } from '@jellyfin/client-axios';
 // Modules
 import { TvShowsState } from './tvShows';
@@ -13,12 +13,13 @@ import { BackdropState } from './backdrop';
 import { DeviceState } from './deviceProfile';
 import { ClientSettingsState } from './clientSettings';
 import { ItemsState } from './items';
+import { SocketState } from './socket';
+import { TaskManagerState } from './taskManager';
 // Vuex plugins
 import { websocketPlugin } from './plugins/websocketPlugin';
 import { playbackReportingPlugin } from './plugins/playbackReportingPlugin';
 import { preferencesSync } from './plugins/preferencesSyncPlugin';
 import { userPlugin } from './plugins/userPlugin';
-import { SocketState } from './socket';
 
 export const plugins = [
   websocketPlugin,
@@ -35,11 +36,7 @@ export interface AuthState {
   user: UserDto;
 }
 
-export interface RootState {
-  // A generic syncing indicator for settings or item syncing to and from the server
-  syncing: boolean;
-}
-export interface AppState extends RootState {
+export interface AppState {
   auth: AuthState;
   backdrop: BackdropState;
   clientSettings: ClientSettingsState;
@@ -54,19 +51,10 @@ export interface AppState extends RootState {
   user: UserState;
   userViews: UserViewsState;
   socket: SocketState;
+  taskManager: TaskManagerState;
 }
 
-export const state = (): RootState => ({
-  syncing: false
-});
-
-export const mutations: MutationTree<RootState> = {
-  SET_SYNC_STATUS(state: RootState, value: boolean) {
-    state.syncing = value;
-  }
-};
-
-export const actions: ActionTree<RootState, RootState> = {
+export const actions: ActionTree<AppState, AppState> = {
   async reset({ dispatch }, { clearCritical }: { clearCritical: boolean }) {
     const promises = [];
 
@@ -81,14 +69,12 @@ export const actions: ActionTree<RootState, RootState> = {
     promises.push(dispatch('user/clearUser', { root: true }));
     promises.push(dispatch('userViews/clearUserViews', { root: true }));
     promises.push(dispatch('socket/closeSocket', { root: true }));
+    promises.push(dispatch('taskManager/reset'), { root: true });
 
     if (clearCritical) {
       promises.push(dispatch('servers/clearServers', { root: true }));
     }
 
     await Promise.all(promises);
-  },
-  setSyncStatus({ commit }, value: boolean) {
-    commit('SET_SYNC_STATUS', value);
   }
 };
