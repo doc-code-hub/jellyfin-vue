@@ -76,10 +76,6 @@ import { mapGetters, mapState } from 'vuex';
 
 export default Vue.extend({
   props: {
-    fab: {
-      type: Boolean,
-      required: false
-    },
     nudgeBottom: {
       type: Number,
       default: 5
