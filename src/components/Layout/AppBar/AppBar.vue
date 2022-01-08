@@ -18,7 +18,7 @@
       </template>
     </app-bar-button-layout>
     <v-spacer />
-    <app-bar-button-layout v-if="!$nuxt.isOffline" :color="'red'">
+    <app-bar-button-layout v-if="$nuxt.isOffline" :color="'red'">
       <template #icon>
         <v-icon>mdi-network-off-outline</v-icon>
       </template>

@@ -6,6 +6,7 @@
     bottom
     :nudge-bottom="nudgeBottom"
     offset-y
+    disabled
     min-width="25em"
     max-width="25em"
     min-height="25em"
