@@ -1,5 +1,8 @@
 <template>
   <div class="text--secondary">
+    <span v-if="item.Type === 'Episode'">
+      {{ item.SeasonName }} &#8226; {{ item.IndexNumber }}
+    </span>
     <span v-if="item.ProductionYear && year">{{ item.ProductionYear }}</span>
     <span v-if="item.OfficialRating && rating">{{ item.OfficialRating }}</span>
     <span v-if="item.CommunityRating && rating">
