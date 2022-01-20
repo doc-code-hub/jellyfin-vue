@@ -427,8 +427,8 @@ export default Vue.extend({
         }
       }
     },
-    handleVideoClick(e: any) {
-      const target = e.target;
+    handleVideoClick(e: MouseEvent) {
+      const target = e.target as HTMLElement;
 
       if (
         target?.classList?.contains('player-overlay') &&
