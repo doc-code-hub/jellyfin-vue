@@ -424,7 +424,8 @@ export default Vue.extend({
       const target = e.target as HTMLElement;
 
       if (
-        target?.classList?.contains('player-overlay') &&
+        target &&
+        target.classList.contains('player-overlay') &&
         this.getCurrentlyPlayingMediaType === 'Video'
       ) {
         this.playPause();
